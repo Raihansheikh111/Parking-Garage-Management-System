@@ -12,10 +12,15 @@ export async function apiRequest(path, options = {}) {
     headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers,
-  })
+  let response
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers,
+    })
+  } catch (error) {
+    throw new Error('Unable to connect to the server. Please start the backend and try again.')
+  }
 
   const contentType = response.headers.get('content-type') || ''
   const payload = contentType.includes('application/json')

@@ -1,15 +1,86 @@
 :root {
-  font-family: Arial, sans-serif;
-  color: #1f2937;
+  font-family: Inter, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #0f172a;
   background: #f8fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100vh;
 }
 
 body {
-  margin: 0;
+  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+  color: #0f172a;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.95;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+input, select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.8rem 0.9rem;
+  background: #fff;
+  color: #0f172a;
+}
+
+input:focus, select:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.2);
+  border-color: #2563eb;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+h1, h2, h3, p {
+  margin-top: 0;
 }
 
 #root {
   min-height: 100vh;
-  display: grid;
-  place-items: center;
 }
