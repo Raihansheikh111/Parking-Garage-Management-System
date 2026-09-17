@@ -51,3 +51,5 @@ Garage and spot endpoints provide the setup data needed by parking operations. A
 ### Tradeoffs
 
 The implementation uses straightforward controllers and services rather than adding a validation framework or transaction infrastructure. Spot allocation is atomic and session creation rolls the spot back if it fails. MongoDB must be configured through `server/.env`; the server does not start when `MONGO_URI` is missing or the connection fails.
+
+Checkout saves the completed session before releasing its spot. If the separate spot update fails after the session save, the session can be completed while the spot remains occupied. A MongoDB transaction could make those writes atomic, but this timed assessment keeps the simpler approach and does not introduce transaction infrastructure without a replica-set deployment.
