@@ -52,6 +52,27 @@ GET /api/health
 
 The endpoint returns the current API status.
 
+## Backend APIs
+
+The Phase 2 backend requires a valid `MONGO_URI` in `server/.env`.
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/garages` | Create a garage with levels and pricing. Body: `name`, `address`, `levels`, `pricing`. |
+| `GET` | `/api/garages?page=1&limit=10` | List garages with pagination. |
+| `GET` | `/api/garages/:id` | Get one garage. |
+| `PUT` | `/api/garages/:id` | Update garage configuration. |
+| `POST` | `/api/spots` | Create an available spot. Body: `garageId`, `level`, `spotNumber`, `type`. |
+| `GET` | `/api/spots?garageId=&type=&status=&level=` | List spots with optional filters. |
+| `GET` | `/api/garages/:garageId/spots/availability?type=ev` | Return availability for one type, or grouped by type when omitted. |
+| `POST` | `/api/parking/check-in` | Allocate a compatible spot and create an active session. Body: `garageId`, `plateNumber`, `vehicleType`. |
+| `POST` | `/api/parking/check-out` | Complete a session and release its spot. Body: `plateNumber`. |
+| `GET` | `/api/parking/search?plate=RJ14` | Search sessions by partial normalized plate. |
+| `GET` | `/api/parking/sessions?page=1&limit=10&sort=checkInTime&order=desc` | List session history with filters, pagination, and whitelisted sorting. |
+| `GET` | `/api/parking/sessions/:id` | Get one parking session. |
+
+Successful check-in returns a `session` containing the normalized plate, vehicle type, allocated spot, status, and check-in time. Successful checkout returns a `receipt` containing the duration and fee.
+
 ## Current Status
 
-This is Phase 1. Only the project foundation, frontend setup, backend health endpoint, and reusable database connection configuration are implemented. Parking functionality is intentionally not implemented yet.
+Phase 2 is implemented. The backend now includes MongoDB models, garage and spot management, atomic compatible spot allocation, check-in/check-out, fee calculation, availability, plate search, session history, pagination, sorting, and centralized API errors. Authentication and the frontend remain future phases.

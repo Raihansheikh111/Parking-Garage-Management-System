@@ -22,16 +22,32 @@ React and Vite provide a fast, straightforward frontend development workflow. No
 
 The frontend and backend are separated into `client/` and `server/` so each application has its own dependencies, scripts, and deployment boundary. The server source is organized by responsibility (`config`, `controllers`, `middleware`, `models`, `routes`, `services`, and `utils`) so later phases can add functionality without changing the project foundation.
 
-## Future Architecture
+## Further Future Architecture
 
-Later phases will add:
+Later phases beyond the current core backend may add:
 
 - authentication
-- garage management
-- parking spots
-- check-in/check-out
-- fee calculation
-- EV constraints
-- search
-- pagination
-- sorting
+- frontend workflows
+- operational refinements
+
+## Phase 2 Decisions
+
+### Database Schema
+
+The database contains `User`, `Garage`, `ParkingSpot`, and `ParkingSession` models. A garage owns spots and pricing. A parking session references its garage and spot, stores normalized plate data, and records active or completed state. Users are defined for future authentication only; authentication is not implemented in this phase.
+
+### Domain Rules
+
+Vehicle and spot types match exactly: compact vehicles use compact spots, standard vehicles use standard spots, and EV vehicles use EV spots. Check-in reserves a matching available spot with an atomic `findOneAndUpdate`, so concurrent requests cannot successfully claim the same spot. A partial unique index prevents multiple active sessions for one normalized plate, with application validation providing the user-facing conflict response.
+
+### Fees
+
+Fee calculation is deterministic and lives in `fee.service.js`. The first billable hour uses `firstHour`; each later billable hour uses `additionalHour`; partial hours round up. For this assessment, the daily cap is interpreted as the maximum fee for the entire parking session, so the result is `Math.min(calculatedFee, dailyCap)`. This deliberately avoids inventing multi-day billing behavior.
+
+### API Operations
+
+Garage and spot endpoints provide the setup data needed by parking operations. Availability is grouped by type when no type is requested. Session history uses MongoDB `skip`, `limit`, and `countDocuments` for pagination, and sorting is restricted to an explicit field whitelist. Search normalizes input and uses a partial plate match.
+
+### Tradeoffs
+
+The implementation uses straightforward controllers and services rather than adding a validation framework or transaction infrastructure. Spot allocation is atomic and session creation rolls the spot back if it fails. MongoDB must be configured through `server/.env`; the server does not start when `MONGO_URI` is missing or the connection fails.
