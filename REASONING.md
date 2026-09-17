@@ -53,3 +53,9 @@ Garage and spot endpoints provide the setup data needed by parking operations. A
 The implementation uses straightforward controllers and services rather than adding a validation framework or transaction infrastructure. Spot allocation is atomic and session creation rolls the spot back if it fails. MongoDB must be configured through `server/.env`; the server does not start when `MONGO_URI` is missing or the connection fails.
 
 Checkout saves the completed session before releasing its spot. If the separate spot update fails after the session save, the session can be completed while the spot remains occupied. A MongoDB transaction could make those writes atomic, but this timed assessment keeps the simpler approach and does not introduce transaction infrastructure without a replica-set deployment.
+
+## Phase 3 Decisions
+
+Authentication uses `bcryptjs` to hash passwords before storage and `jsonwebtoken` to issue seven-day tokens signed with the environment-provided `JWT_SECRET`. The authentication middleware validates a Bearer token, loads the user, and attaches safe user information to `req.user` before protected routes run. Registration and login remain public, while all operational garage and parking APIs require authentication.
+
+No RBAC was introduced because the assessment requires identity protection, not roles or permissions. Passwords, password hashes, and tokens are never returned in unsafe responses or logged. Garage ownership was not added to the existing model because the current requirement is authenticated access for any garage and adding ownership would create an unnecessary data migration boundary.

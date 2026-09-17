@@ -1,6 +1,8 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
+import authRoutes from './routes/auth.routes.js'
+import { requireAuth } from './middleware/auth.middleware.js'
 import { connectDB } from './config/db.js'
 import { errorMiddleware } from './middleware/error.middleware.js'
 import garageRoutes from './routes/garage.routes.js'
@@ -15,10 +17,11 @@ const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
-app.use('/api/garages', garageRoutes)
-app.use('/api/spots', spotRoutes)
-app.use('/api/garages', availabilityRouter)
-app.use('/api/parking', parkingRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/garages', requireAuth, garageRoutes)
+app.use('/api/spots', requireAuth, spotRoutes)
+app.use('/api/garages', requireAuth, availabilityRouter)
+app.use('/api/parking', requireAuth, parkingRoutes)
 
 app.get('/api/health', (_req, res) => {
   res.json({

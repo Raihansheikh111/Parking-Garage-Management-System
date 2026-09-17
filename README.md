@@ -56,6 +56,18 @@ The endpoint returns the current API status.
 
 The Phase 2 backend requires a valid `MONGO_URI` in `server/.env`.
 
+## Authentication
+
+Register a user with `POST /api/auth/register` using `name`, `email`, and `password`. Passwords must be at least 8 characters and are stored only as bcrypt hashes.
+
+Log in with `POST /api/auth/login` using `email` and `password`. A successful login returns a JWT. Send it on protected requests with:
+
+```text
+Authorization: Bearer <token>
+```
+
+`POST /api/auth/register`, `POST /api/auth/login`, and `GET /api/health` are public. All garage, spot, availability, check-in, check-out, search, and session-history endpoints require authentication.
+
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | `POST` | `/api/garages` | Create a garage with levels and pricing. Body: `name`, `address`, `levels`, `pricing`. |
@@ -75,4 +87,4 @@ Successful check-in returns a `session` containing the normalized plate, vehicle
 
 ## Current Status
 
-Phase 2 is implemented. The backend now includes MongoDB models, garage and spot management, atomic compatible spot allocation, check-in/check-out, fee calculation, availability, plate search, session history, pagination, sorting, and centralized API errors. Authentication and the frontend remain future phases.
+Phase 3 is implemented. The backend includes the Phase 2 parking functionality plus user registration, bcrypt password hashing, JWT login, authentication middleware, and protected operational APIs. The frontend remains a future phase; authorization roles are intentionally not implemented.
